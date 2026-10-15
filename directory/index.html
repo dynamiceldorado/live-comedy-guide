@@ -1,0 +1,270 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Atlanta Comedy Directory</title>
+<style id="dir-css">
+/* Layout: masthead + sticky filter bar + responsive card grid; owner-only editor drawer */
+:root{
+  --bg:#f5f6f1; --surface:#ffffff; --fg:#14231c; --muted:#56655d; --line:#d9ded5;
+  --green:#0f3d2e; --gold:#b8891a; --gold-hi:#d6a92a; --on-green:#f4efdc;
+  --clown:#d23a3a; --burlesque:#8a4fc7; --standup:#2f6fd6; --improv:#2e9d58; --sketch:#e0b400; --other:#8a948e;
+  --display:"Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1712; --surface:#13221b; --fg:#e6ebe4; --muted:#9aa89f; --line:#24362d;
+  --green:#163f30; --gold:#d6a92a; --gold-hi:#e8bf47; --on-green:#f4efdc; --other:#6f7a74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1712; --surface:#13221b; --fg:#e6ebe4; --muted:#9aa89f; --line:#24362d;
+  --green:#163f30; --gold:#d6a92a; --gold-hi:#e8bf47; --on-green:#f4efdc; --other:#6f7a74; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+header.mast{background:var(--green);color:var(--on-green);padding-block:28px 22px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,52px);line-height:1.02;margin:6px 0 10px;text-wrap:balance;color:var(--on-green)}
+h1 span{color:var(--gold-hi)}
+.lede{max-width:62ch;margin:0;color:var(--on-green);opacity:.9}
+.mast-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font-size:13px;opacity:.85}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px}
+.bar .wrap{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.row label.lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-right:4px;min-width:52px}
+input[type=search],input[type=text],input[type=url],select,textarea{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.sq{width:10px;height:10px;border-radius:2px;display:inline-block;flex:none}
+.count{font-size:13px;color:var(--muted)}
+main{padding-block:20px 48px}
+.group{margin-bottom:30px}
+.group h2{font-family:var(--display);font-size:22px;margin:0 0 12px;display:flex;align-items:baseline;gap:10px}
+.group h2 small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card h3{margin:0;font-size:17px;line-height:1.25;font-family:var(--display);font-weight:700}
+.card h3 a{color:inherit;text-decoration:none;border-bottom:2px solid var(--gold)}
+.card h3 a:hover{color:var(--gold)}
+.where{font-size:13px;color:var(--muted)}
+.note{margin:0;font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.tag{font-size:12px;display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+.area{font-size:11px;font-weight:700;letter-spacing:.08em;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+.area.otp{border-color:var(--gold);color:var(--gold)}
+.own{display:flex;gap:8px;margin-top:6px}
+.btn{font:inherit;font-size:13px;border-radius:8px;padding:7px 12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.btn.primary{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.btn.gold{background:var(--gold);color:#1b1404;border-color:var(--gold);font-weight:700}
+.btn.link{border:none;background:none;padding:2px 0;text-decoration:underline;color:var(--muted)}
+.empty{padding:24px;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}
+section.suggest{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:10px}
+section.suggest h2{font-family:var(--display);margin:0 0 6px;font-size:22px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.form .full{grid-column:1/-1}
+.form label{font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.checks{display:flex;flex-wrap:wrap;gap:10px;font-size:14px}
+.checks label{flex-direction:row;align-items:center;gap:6px;font-weight:400;color:var(--fg);font-size:14px}
+pre.out{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px;margin:10px 0 0}
+.ownerbar{background:var(--gold);color:#1b1404}
+.ownerbar .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding-block:8px;font-size:14px}
+.status{font-size:13px;color:var(--muted);min-height:1.4em}
+footer{border-top:1px solid var(--line);padding-block:18px 30px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<div id="dir-root"></div>
+<script type="application/json" id="dir-data">{"updated": "2026-10-15", "items": [{"id": "dads-garage", "name": "Dad's Garage", "type": "venue", "area": "ITP", "where": "569 Ezzard St SE · Old Fourth Ward", "url": "https://www.dadsgarage.com", "note": "Atlanta's long-running improv theater: weekly improv, sketch and family shows, plus Dad's Garage University classes in improv, stand-up, sketch and burlesque.", "genres": ["improv", "sketch", "standup", "burlesque"], "ig": ""}, {"id": "react-theatre", "name": "React Theatre", "type": "venue", "area": "ITP", "where": "572 Edgewood Ave SE · Old Fourth Ward", "url": "https://www.dadsgarage.com/react-calendar", "note": "Run by Dad's Garage. Student and indie improv shows, late-night jams, an open mic, and visiting-artist events.", "genres": ["improv", "standup", "clown"], "ig": ""}, {"id": "whole-world", "name": "Whole World Improv Theatre", "type": "venue", "area": "ITP", "where": "1216 Spring St NW · Midtown", "url": "https://www.wholeworldtheatre.com", "note": "Short-form improv on Friday and Saturday nights, late shows, and 10-week improv classes.", "genres": ["improv"], "ig": ""}, {"id": "laughing-skull", "name": "Laughing Skull Lounge", "type": "venue", "area": "ITP", "where": "878 Peachtree St NE · Midtown", "url": "https://www.laughingskulllounge.com", "note": "Dedicated stand-up room with weeknight open mics, weekend local showcases, and stand-up classes.", "genres": ["standup"], "ig": ""}, {"id": "punchline", "name": "The Punchline", "type": "venue", "area": "ITP", "where": "Roswell Rd · Buckhead", "url": "https://www.punchline.com", "note": "Classic stand-up club with nightly shows. Also home to Jeff Justice's Comedy Workshoppe classes.", "genres": ["standup"], "ig": ""}, {"id": "helium", "name": "Helium Comedy Club", "type": "venue", "area": "OTP", "where": "Alpharetta", "url": "https://atlanta.heliumcomedy.com", "note": "Touring headliners in the main room, plus smaller shows \"In The Other Room.\"", "genres": ["standup"], "ig": ""}, {"id": "onward", "name": "Onward Theatre", "type": "venue", "area": "ITP", "where": "711 Catherine St SW · Southwest Atlanta", "url": "https://onwardtheatre.org", "note": "Improv, stand-up and short-play nights, plus stand-up and musical improv classes.", "genres": ["improv", "standup", "variety"], "ig": ""}, {"id": "alley-stage", "name": "The Alley Stage", "type": "venue", "area": "OTP", "where": "11 Anderson St · Marietta Square", "url": "https://www.alleystage.org", "note": "Weekend comedy, a Tuesday open mic, monthly improv nights, and stand-up, improv and sketch classes.", "genres": ["improv", "standup", "sketch"], "ig": ""}, {"id": "awp", "name": "Atlanta Workshop Players · Studio 13", "type": "venue", "area": "OTP", "where": "Roswell", "url": "https://www.atlantaworkshopplayers.com", "note": "Saturday-night improv in a blackbox, with adult and youth troupes.", "genres": ["improv"], "ig": ""}, {"id": "aurora-cineplex", "name": "Aurora Cineplex", "type": "venue", "area": "OTP", "where": "5100 Commerce Pkwy · Roswell", "url": "https://linktr.ee/auroracineplex", "note": "A movie theater that hosts monthly live improv, watched from heated recliners.", "genres": ["improv"], "ig": ""}, {"id": "7-stages", "name": "7 Stages", "type": "venue", "area": "ITP", "where": "1105 Euclid Ave NE · Little Five Points", "url": "https://www.7stages.org", "note": "Experimental and international theater. It hosts the Atlanta Comedy Film Festival.", "genres": ["variety"], "ig": ""}, {"id": "red-light", "name": "Red Light Café", "type": "venue", "area": "ITP", "where": "Virginia-Highland", "url": "", "note": "Music and cabaret venue, home of Tease Tuesday Burlesque.", "genres": ["burlesque"], "ig": ""}, {"id": "tucker-brewing", "name": "Tucker Brewing Company", "type": "venue", "area": "OTP", "where": "2003 S Bibb Dr · Tucker", "url": "", "note": "A brewery that hosts occasional stand-up nights and comedy fundraisers.", "genres": ["standup"], "ig": ""}, {"id": "safety-third", "name": "Safety Third Improv", "type": "show", "area": "OTP", "where": "Third Fridays · Aurora Cineplex, Roswell", "url": "https://www.safetythirdimprov.com", "note": "An 18+ improv troupe playing a monthly show built from audience suggestions.", "genres": ["improv"], "ig": ""}, {"id": "blackground", "name": "BlackGround", "type": "show", "area": "ITP", "where": "Dad's Garage", "url": "https://www.dadsgarage.com/shows", "note": "Dad's Garage's Black improv ensemble, the spiritual successor to Dark Side of the Room. Its newer cohort performs as BlackGround NXT.", "genres": ["improv"], "ig": ""}, {"id": "the-dynamic", "name": "The Dynamic", "type": "show", "area": "ITP", "where": "Often at React Theatre", "url": "", "note": "Independent improv team, formerly the Dynamic El Dorado house team.", "genres": ["improv"], "ig": ""}, {"id": "scandal", "name": "Scandal!", "type": "show", "area": "ITP", "where": "Dad's Garage", "url": "https://www.dadsgarage.com/shows", "note": "Dad's Garage's improvised soap opera, which runs in seasons.", "genres": ["improv"], "ig": ""}, {"id": "funny-bus", "name": "Funny Bus ATL", "type": "show", "area": "ITP", "where": "Departs Margaret Mitchell House · Midtown", "url": "https://www.funnybus.net/atlanta", "note": "A comedy city tour on a bus, hosted by local comedians. BYOB.", "genres": ["standup"], "ig": ""}, {"id": "tease-tuesday", "name": "Tease Tuesday Burlesque", "type": "show", "area": "ITP", "where": "Second Tuesdays · Red Light Café", "url": "", "note": "A monthly burlesque night.", "genres": ["burlesque"], "ig": ""}, {"id": "squeeze-clown", "name": "Squeeze the Clown", "type": "show", "area": "ITP", "where": "Atlanta area", "url": "http://www.squeezetheclown.com", "note": "An Atlanta-area clown who appears at Clowns Without Borders-USA events, including an Atlanta Backyard Bash.", "genres": ["clown"], "ig": ""}, {"id": "ded", "name": "Dynamic El Dorado", "type": "classes", "area": "ITP", "where": "Old Fourth Ward · visiting workshops, plus shows at partner venues", "url": "https://dynamiceldorado.com", "note": "A comedy incubator that brings visiting instructors for clown, bouffon, improv, stand-up and sketch workshops, and produces shows at partner venues.", "genres": ["clown", "improv", "standup", "sketch"], "ig": "@dynamiceldorado"}, {"id": "dads-garage-u", "name": "Dad's Garage University", "type": "classes", "area": "ITP", "where": "Dad's Garage & React Theatre", "url": "https://dads-garage.coursestorm.com/browse", "note": "Eight-week classes from Level 1 improv to performance labs, plus stand-up, sketch, burlesque and a 55+ improv track.", "genres": ["improv", "standup", "sketch", "burlesque"], "ig": ""}, {"id": "jeff-justice", "name": "Jeff Justice's Comedy Workshoppe", "type": "classes", "area": "ITP", "where": "At The Punchline · Buckhead", "url": "https://comedyworkshoppe.com", "note": "Long-running Atlanta stand-up classes, Level I and II.", "genres": ["standup"], "ig": ""}, {"id": "sketchworks", "name": "Sketchworks Comedy", "type": "classes", "area": "ITP", "where": "Atlanta", "url": "https://www.sketchworkscomedy.com", "note": "A sketch comedy company offering sketch writing classes and one-on-one coaching.", "genres": ["sketch"], "ig": ""}, {"id": "alliance-improv", "name": "Alliance Theatre: Adult Improv", "type": "classes", "area": "ITP", "where": "1280 Peachtree St NE · Midtown", "url": "https://www.alliancetheatre.org/education/class/improv-i", "note": "Small adult improv classes at the Woodruff Arts Center.", "genres": ["improv"], "ig": ""}, {"id": "stage-door", "name": "Stage Door Theatre: Adult Improv", "type": "classes", "area": "OTP", "where": "Dunwoody", "url": "https://stagedoortheatrega.org/adult-improv-classes/", "note": "Sunday adult improv classes at several levels.", "genres": ["improv"], "ig": ""}, {"id": "community-jam", "name": "Dad's Garage Community Jam", "type": "openmic", "area": "ITP", "where": "Tuesdays 8 PM · Dad's Garage", "url": "https://www.dadsgarage.com/shows", "note": "A free improv jam open to everyone.", "genres": ["improv"], "ig": ""}, {"id": "after-jam", "name": "The After Jam", "type": "openmic", "area": "ITP", "where": "Tuesdays 10:15 PM · React Theatre", "url": "https://www.dadsgarage.com/react-calendar", "note": "A late-night improv jam that runs until everyone has played. $6 to play.", "genres": ["improv"], "ig": ""}, {"id": "leah-mic", "name": "Leah Open Mic", "type": "openmic", "area": "ITP", "where": "Wednesdays 10:15 PM · React Theatre", "url": "https://www.dadsgarage.com/react-calendar", "note": "Five minutes of stage time. 18+.", "genres": ["standup"], "ig": ""}, {"id": "skull-mic", "name": "Laughing Skull Open Mic", "type": "openmic", "area": "ITP", "where": "Mon–Wed 8 PM · Laughing Skull Lounge", "url": "https://www.laughingskulllounge.com", "note": "Weeknight stand-up open mic.", "genres": ["standup"], "ig": ""}, {"id": "alley-mic", "name": "Alley Stage Comedy Open Mic", "type": "openmic", "area": "OTP", "where": "Tuesdays · Marietta Square", "url": "https://www.alleystage.org/events/80422", "note": "Weekly stand-up open mic. $10 entry.", "genres": ["standup"], "ig": ""}, {"id": "popcast", "name": "The Tim Andrews Popcast", "type": "podcast", "area": "", "where": "95.5 WSB", "url": "https://wsbradio.com/onair/popcast", "note": "Conversations about Atlanta comedy, film, pop culture and the stage scene.", "genres": ["variety"], "ig": ""}, {"id": "yes-and", "name": "Yes, And (archive)", "type": "podcast", "area": "", "where": "Host: Rylee Cravens · 2023–24", "url": "https://yesandpod.podbean.com", "note": "Interviews with Atlanta improvisers and comedians about taking risks on stage.", "genres": ["improv"], "ig": ""}, {"id": "hot-comics", "name": "Hot Comics (archive)", "type": "podcast", "area": "", "where": "Hosts: Lisandra Vazquez & Brandi Unger · 2022–23", "url": "https://podcasts.apple.com/us/podcast/hot-comics/id1613648867", "note": "Atlanta stand-ups chat with local comics, late-night-talk-show style.", "genres": ["standup"], "ig": ""}, {"id": "acff", "name": "Atlanta Comedy Film Festival", "type": "festival", "area": "ITP", "where": "January · 7 Stages", "url": "https://filmfreeway.com/AtlantaComedyFilmFestival", "note": "Comedy shorts, features, sketch and stand-up films. The 2027 festival runs Jan 22–24.", "genres": ["sketch", "standup"], "ig": ""}, {"id": "west-end-fest", "name": "West End Comedy Fest", "type": "festival", "area": "ITP", "where": "March · West End", "url": "https://www.westendcomedyfest.com", "note": "A neighborhood festival with 75+ comedians across West End venues.", "genres": ["standup"], "ig": ""}, {"id": "atl-fringe", "name": "Atlanta Fringe Festival", "type": "festival", "area": "ITP", "where": "Late May–June", "url": "https://atlantafringe.org", "note": "An annual performance festival, with 2026's edition running May 27–June 7.", "genres": ["variety", "clown"], "ig": ""}, {"id": "allimprov", "name": "AllImprov: Atlanta", "type": "resource", "area": "", "where": "Online calendar", "url": "https://allimprov.com/atlanta/", "note": "A running calendar of Atlanta improv shows, jams and classes.", "genres": ["improv"], "ig": ""}, {"id": "flopbox", "name": "FlopBox: Atlanta", "type": "resource", "area": "", "where": "Online calendar", "url": "https://flopbox.net/city/atlanta", "note": "An alt-comedy and clown calendar, now with an Atlanta page.", "genres": ["clown", "variety"], "ig": ""}, {"id": "lcc", "name": "Live Comedy (cheap!)", "type": "resource", "area": "", "where": "Weekly newsletter · Wednesdays", "url": "https://dynamiceldorado.com", "note": "A weekly email from Dynamic El Dorado: a short, hand-picked list of Atlanta's lesser-known live comedy.", "genres": ["clown", "burlesque", "standup", "improv", "sketch"], "ig": ""}, {"id": "no-shame", "name": "No Shame", "type": "openmic", "area": "OTP", "where": "Fridays 10 PM · Georgia Ensemble Theatre at Act3 Playhouse, 6285-R Roswell Rd · Sandy Springs", "url": "https://get.org/noshame/", "note": "A weekly late-night open stage: the first 15 to sign up (from 9:30 PM) get up to five minutes for anything original, including stand-up, improv, music and monologues. $5, or $10 to BYOB. 18+. Updates on Instagram @noshameatlanta.", "genres": ["variety", "standup", "improv"], "ig": "@noshameatlanta"}, {"id": "georgia-ensemble", "name": "Georgia Ensemble Theatre · Act3 Playhouse", "type": "venue", "area": "OTP", "where": "6285-R Roswell Rd · Sandy Springs", "url": "https://get.org", "note": "A professional theater company, and home of the Friday-night No Shame open stage.", "genres": ["variety"], "ig": ""}, {"id": "kos", "name": "KOS", "type": "venue", "area": "OTP", "where": "598 W Atlanta St SE, Suite A · Marietta", "url": "https://www.koscobb.org/", "ig": "@smyrnakosinc", "note": "A Cobb County learning community that hosts stand-up classes, Tom Patillo's classes and a writers' room every other Monday.", "genres": ["standup", "sketch"]}, {"id": "the-supermarket", "name": "The Supermarket", "type": "venue", "area": "ITP", "where": "638 N Highland Ave NE · Poncey-Highland", "url": "https://www.thesupermarketatl.com/", "ig": "@thesupermarket.atl", "note": "A DIY arts venue on Atlanta's Eastside that hosts comedy and other live shows. Check its calendar for comedy nights.", "genres": ["variety"]}, {"id": "boggs-social", "name": "Bogg's Social & Supply", "type": "venue", "area": "", "where": "West side, just off the Beltline", "url": "https://www.boggssocial.com/", "ig": "@boggssocial", "note": "A social venue that has hosted comedy events. Check its calendar for upcoming shows.", "genres": ["standup"]}, {"id": "whiplash", "name": "Whiplash Comedy", "type": "venue", "area": "ITP", "where": "Ponce City Market · Old Fourth Ward", "url": "https://www.whiplashcomedy.com/", "ig": "", "note": "A comedy club above City Winery at Ponce City Market, opened October 12, 2026 by the former operator of Laughing Skull Lounge.", "genres": ["standup"]}, {"id": "tom-patillo", "name": "Tom Patillo Classes", "type": "classes", "area": "OTP", "where": "KOS · Marietta", "url": "https://www.koscobb.org/", "ig": "", "note": "Upcoming classes taught by Tom Patillo at KOS in Marietta.", "genres": ["standup"]}, {"id": "kos-writers-room", "name": "KOS Writers' Room", "type": "classes", "area": "OTP", "where": "KOS · Marietta · every other Monday", "url": "https://www.koscobb.org/", "ig": "", "note": "A writers' room every other Monday, hosted by Leah Marie. Writers bring work in progress and build it with the group.", "genres": ["standup", "sketch"]}, {"id": "ladies-who-lunch", "name": "Ladies Who Lunch", "type": "show", "area": "", "where": "Atlanta", "url": "", "ig": "", "note": "An Atlanta improv group.", "genres": ["improv"]}, {"id": "laughing-skull-fest", "name": "Laughing Skull Comedy Festival", "type": "festival", "area": "ITP", "where": "Midtown · Laughing Skull Lounge · dates vary", "url": "https://www.laughingskulllounge.com", "ig": "", "note": "An annual stand-up festival from Laughing Skull Lounge, with local and touring comics across multiple shows. Check the lounge for the next dates.", "genres": ["standup"]}, {"id": "all-the-laughs", "name": "All The Laughs Comedy Festival", "type": "festival", "area": "", "where": "Atlanta · dates vary", "url": "https://filmfreeway.com/AllTheLaughsComedyAwards", "ig": "", "note": "A comedy festival and awards program that takes submissions through FilmFreeway.", "genres": ["standup", "sketch"]}, {"id": "billy-willig-podcast", "name": "Billy Willig's Billy Podcast", "type": "podcast", "area": "", "where": "Podcast", "url": "https://www.instagram.com/billypodcast/", "ig": "@billypodcast", "note": "A podcast hosted by comedian Billy Willig.", "genres": ["standup"]}, {"id": "whats-good-atlanta", "name": "What's Good, Atlanta?", "type": "podcast", "area": "", "where": "WABE", "url": "https://www.wabe.org/podcasts/whatsgoodatlanta/whats-good-atlanta/", "ig": "", "note": "A WABE public-radio podcast about Atlanta culture and the people shaping it.", "genres": ["variety"]}, {"id": "cheaties", "name": "Cheaties", "type": "podcast", "area": "", "where": "Hosted by Lace Larrabee & Katherine Blanford", "url": "https://search.podderapp.com/podcast/cheaties-with-lace-larrabee-and-katherine-blanford", "ig": "@cheatiespodcast", "note": "A comedy podcast hosted by Lace Larrabee and Katherine Blanford.", "genres": ["standup"]}, {"id": "amy-brown-podcast", "name": "Amy Brown Comedy Podcast", "type": "podcast", "area": "", "where": "Podcast", "url": "https://amybrowncomedy.com/podcast", "ig": "", "note": "A weekly comedy podcast hosted by Amy Brown, with a guest comic each episode.", "genres": ["standup"]}, {"id": "hey-im-coming-atl", "name": "Hey I'm Coming to Atlanta", "type": "resource", "area": "", "where": "Facebook group", "url": "", "ig": "", "note": "A Facebook group where touring comics announce they're coming to Atlanta and look for local shows.", "genres": ["standup"]}, {"id": "atl-comedy-discord", "name": "Atlanta Comedy Discord", "type": "resource", "area": "", "where": "Discord server", "url": "", "ig": "", "note": "An online community for Atlanta comics and comedy fans: show announcements, open-mic chatter and collaborators.", "genres": ["standup", "improv", "sketch"]}, {"id": "hot-breath", "name": "Hot Breath!", "type": "podcast", "area": "", "where": "Host: Joel Byars", "url": "https://hotbreath.beehiiv.com", "ig": "", "note": "Joel Byars interviews comedians, from Atlanta favorites to national headliners. 400+ episodes.", "genres": ["standup"]}, {"id": "relapse-comedy", "name": "Relapse Comedy · Comedy City", "type": "venue", "area": "", "where": "Atlanta", "url": "https://relapsecomedy.com/Home", "ig": "", "note": "Relapse Theatre's Comedy City booking platform for showtime slots, with a Relapse University class program.", "genres": ["variety", "standup", "improv", "sketch"]}]}</script>
+<script id="dir-app">
+(function(){
+  var GENRES=[["clown","Clown","--clown"],["burlesque","Burlesque","--burlesque"],["standup","Stand-up","--standup"],["improv","Improv","--improv"],["sketch","Sketch","--sketch"],["variety","Variety & theater","--other"]];
+  var TYPES=[["venue","Theaters & clubs"],["show","Shows & troupes"],["openmic","Open mics & jams"],["classes","Classes & schools"],["podcast","Podcasts"],["festival","Festivals"],["performer","Performers"],["resource","Calendars & resources"]];
+  var data; try{data=JSON.parse(document.getElementById("dir-data").textContent)}catch(e){data={updated:"",items:[]}}
+  var state={q:"",genre:null,type:null,area:null,owner:false,dirty:false,editing:null,canSubmit:false,showInbox:false,pending:[],names:{}};
+  var dbApi=null,userApi=null,myId=null;
+  var root=document.getElementById("dir-root");
+  function gColor(g){for(var i=0;i<GENRES.length;i++)if(GENRES[i][0]===g)return "var("+GENRES[i][2]+")";return "var(--other)"}
+  function gName(g){for(var i=0;i<GENRES.length;i++)if(GENRES[i][0]===g)return GENRES[i][1];return g}
+  function el(tag,attrs,kids){var n=document.createElement(tag);if(attrs)for(var k in attrs){if(k==="text")n.textContent=attrs[k];else if(k==="on")for(var ev in attrs.on)n.addEventListener(ev,attrs.on[ev]);else n.setAttribute(k,attrs[k])}(kids||[]).forEach(function(c){if(c)n.appendChild(typeof c==="string"?document.createTextNode(c):c)});return n}
+  function sq(g){var s=el("span",{class:"sq","aria-hidden":"true"});s.style.background=gColor(g);return s}
+  function matches(it){
+    if(state.genre&&(it.genres||[]).indexOf(state.genre)<0)return false;
+    if(state.type&&it.type!==state.type)return false;
+    if(state.area&&it.area!==state.area)return false;
+    if(state.q){var hay=(it.name+" "+(it.where||"")+" "+(it.note||"")+" "+(it.genres||[]).join(" ")).toLowerCase();if(hay.indexOf(state.q.toLowerCase())<0)return false}
+    return true}
+  function chip(label,pressed,onclick,g){var c=el("button",{class:"chip",type:"button","aria-pressed":pressed?"true":"false",on:{click:onclick}},[g?sq(g):null,label]);return c}
+  function render(){
+    root.textContent="";
+    if(state.owner){root.appendChild(el("div",{class:"ownerbar"},[el("div",{class:"wrap"},[
+      el("span",{text:state.dirty?"You have unpublished changes.":"Owner mode: add, edit or remove listings, then publish."}),
+      el("span",{class:"row"},[dbApi?el("button",{class:"btn",type:"button",on:{click:function(){state.showInbox=!state.showInbox;render()}}},["Inbox ("+state.pending.length+")"]):null,el("button",{class:"btn",type:"button",on:{click:function(){openEditor(null)}}},["Add listing"]),
+        el("button",{class:"btn primary",type:"button",id:"pubbtn",on:{click:publishNow}},[state.dirty?"Publish changes":"Published"])])])]))}
+    if(state.owner&&state.showInbox)root.appendChild(inboxSection());
+    var mast=el("header",{class:"mast"},[el("div",{class:"wrap"},[
+      el("div",{class:"eyebrow",text:"From Live Comedy (cheap!) · Dynamic El Dorado"}),
+      el("h1",{},["Atlanta Comedy ",el("span",{text:"Directory"})]),
+      el("p",{class:"lede",text:"Where to see it, learn it and do it: the theaters, troupes, open mics, classes, podcasts and festivals that make up Atlanta's comedy scene, inside and outside the Perimeter."}),
+      el("div",{class:"mast-meta"},[el("span",{text:data.items.length+" listings"}),el("span",{text:"Last updated "+(data.updated||"—")})])])]);
+    root.appendChild(mast);
+    var search=el("input",{type:"search",id:"q",placeholder:"Search names, neighborhoods, notes…","aria-label":"Search the directory",value:state.q});
+    search.addEventListener("input",function(){state.q=search.value;renderResults()});
+    var gRow=el("div",{class:"row"},[el("label",{class:"lbl",text:"Genre"}),chip("All",!state.genre,function(){state.genre=null;render()})]);
+    GENRES.forEach(function(g){gRow.appendChild(chip(g[1],state.genre===g[0],function(){state.genre=state.genre===g[0]?null:g[0];render()},g[0]))});
+    var tRow=el("div",{class:"row"},[el("label",{class:"lbl",text:"Type"}),chip("All",!state.type,function(){state.type=null;render()})]);
+    TYPES.forEach(function(t){tRow.appendChild(chip(t[1],state.type===t[0],function(){state.type=state.type===t[0]?null:t[0];render()}))});
+    var aRow=el("div",{class:"row"},[el("label",{class:"lbl",text:"Where"}),chip("Anywhere",!state.area,function(){state.area=null;render()}),chip("ITP",state.area==="ITP",function(){state.area=state.area==="ITP"?null:"ITP";render()}),chip("OTP",state.area==="OTP",function(){state.area=state.area==="OTP"?null:"OTP";render()}),el("span",{class:"count",id:"count"})]);
+    root.appendChild(el("div",{class:"bar"},[el("div",{class:"wrap"},[search,gRow,tRow,aRow])]));
+    var main=el("main",{},[el("div",{class:"wrap"},[el("div",{id:"results"}),suggestSection()])]);
+    root.appendChild(main);
+    root.appendChild(el("footer",{},[el("div",{class:"wrap"},[el("p",{text:"Listings are checked against public sources and updated regularly. Details change: confirm dates and prices with the venue before you go. Performers are listed only when they submit themselves."})])]));
+    renderResults();
+  }
+  function renderResults(){
+    var box=document.getElementById("results");if(!box)return;box.textContent="";
+    var items=data.items.filter(matches);
+    var c=document.getElementById("count");if(c)c.textContent=items.length+" shown";
+    if(!data.items.length){box.appendChild(el("div",{class:"empty",text:"No listings yet. Use \"Suggest a listing\" below to add the first one."}));return}
+    TYPES.forEach(function(t){
+      var group=items.filter(function(i){return i.type===t[0]}).sort(function(a,b){return a.name.localeCompare(b.name)});
+      if(!group.length){if(t[0]==="performer"&&!state.type&&!state.genre&&!state.q&&!state.area)box.appendChild(el("div",{class:"group"},[el("h2",{},[t[1]]),el("div",{class:"empty",text:"Performers are opt-in. If you perform in Atlanta, suggest your own listing below."})]));return}
+      var grid=el("div",{class:"grid"});
+      group.forEach(function(it){grid.appendChild(card(it))});
+      box.appendChild(el("div",{class:"group"},[el("h2",{},[t[1],el("small",{text:group.length+""})]),grid]));
+    });
+    if(!items.length)box.appendChild(el("div",{class:"empty",text:"Nothing matches those filters. Clear one and try again."}));
+  }
+  function igHref(v){return v.indexOf("http")===0?v:"https://www.instagram.com/"+v.replace(/^@/,"")}
+  function igText(v){return v.indexOf("http")===0?"Instagram":"@"+v.replace(/^@/,"")}
+  function card(it){
+    var title=it.url?el("a",{href:it.url,target:"_blank",rel:"noopener"},[it.name]):it.name;
+    var tags=el("div",{class:"tags"});
+    if(it.area)tags.appendChild(el("span",{class:"area"+(it.area==="OTP"?" otp":""),text:it.area}));
+    (it.genres||[]).forEach(function(g){tags.appendChild(el("span",{class:"tag"},[sq(g),gName(g)]))});
+    var kids=[el("h3",{},[title])];
+    if(it.where)kids.push(el("div",{class:"where",text:it.where}));
+    if(it.ig)kids.push(el("div",{class:"where"},[el("a",{href:igHref(it.ig),target:"_blank",rel:"noopener"},[igText(it.ig)])]));
+    if(it.note)kids.push(el("p",{class:"note",text:it.note}));
+    kids.push(tags);
+    if(state.owner)kids.push(el("div",{class:"own"},[el("button",{class:"btn link",type:"button",on:{click:function(){openEditor(it)}}},["Edit"]),el("button",{class:"btn link",type:"button",on:{click:function(){removeItem(it)}}},["Remove"])]));
+    return el("article",{class:"card"},kids);
+  }
+  function fieldset(prefix,it){
+    it=it||{};
+    var f=el("div",{class:"form"});
+    function inp(id,label,val,type,full){var i=el("input",{id:prefix+id,type:type||"text"});i.value=val||"";f.appendChild(el("label",{class:full?"full":"",for:prefix+id},[label,i]));return i}
+    var name=inp("name","Name",it.name);
+    var sel=el("select",{id:prefix+"type"});TYPES.forEach(function(t){var o=el("option",{value:t[0],text:t[1]});if(it.type===t[0])o.selected=true;sel.appendChild(o)});
+    f.appendChild(el("label",{for:prefix+"type"},["Type",sel]));
+    var area=el("select",{id:prefix+"area"});[["","Not sure"],["ITP","ITP (inside the Perimeter)"],["OTP","OTP (outside the Perimeter)"]].forEach(function(a){var o=el("option",{value:a[0],text:a[1]});if((it.area||"")===a[0])o.selected=true;area.appendChild(o)});
+    f.appendChild(el("label",{for:prefix+"area"},["Area",area]));
+    var where=inp("where","Neighborhood / address / schedule",it.where);
+    var url=inp("url","Website or ticket link",it.url,"url",true);
+    var ig=inp("ig","Instagram (handle or link)",it.ig);
+    var note=el("textarea",{id:prefix+"note",rows:"3"});note.value=it.note||"";f.appendChild(el("label",{class:"full",for:prefix+"note"},["Short description",note]));
+    var checks=el("div",{class:"checks"});var boxes={};
+    GENRES.forEach(function(g){var cb=el("input",{type:"checkbox",id:prefix+"g-"+g[0]});cb.checked=(it.genres||[]).indexOf(g[0])>=0;boxes[g[0]]=cb;checks.appendChild(el("label",{for:prefix+"g-"+g[0]},[cb,sq(g[0]),g[1]]))});
+    f.appendChild(el("div",{class:"full"},[el("div",{class:"lbl",text:"Genres"}),checks]));
+    return {node:f,read:function(){return {name:name.value.trim(),type:sel.value,area:area.value,where:where.value.trim(),url:url.value.trim(),ig:ig.value.trim(),note:note.value.trim(),genres:GENRES.map(function(g){return g[0]}).filter(function(g){return boxes[g].checked})}}};
+  }
+  function suggestSection(){
+    var fs=fieldset("sg-");
+    var out=el("pre",{class:"out",id:"sg-out",hidden:""});
+    var status=el("div",{class:"status",id:"sg-status"});
+    var make=el("button",{class:"btn gold",type:"button",on:{click:function(){
+      var v=fs.read();if(!v.name){status.textContent="Add a name first.";return}
+      var txt="LISTING SUGGESTION\nName: "+v.name+"\nType: "+v.type+"\nArea: "+(v.area||"?")+"\nWhere: "+v.where+"\nLink: "+v.url+"\nInstagram: "+v.ig+"\nGenres: "+v.genres.join(", ")+"\nAbout: "+v.note;
+      out.textContent=txt;out.hidden=false;
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){status.textContent="Copied. Paste it into a reply to the Live Comedy (cheap!) newsletter and we'll add it."},function(){status.textContent="Select the text above and copy it, then paste it into a reply to the newsletter."})}else{status.textContent="Select the text above and copy it, then paste it into a reply to the newsletter."}
+    }}},["Copy my suggestion"]);
+    var direct=el("button",{class:"btn primary",type:"button",id:"sg-direct",on:{click:function(){
+      var v=fs.read();if(!v.name){status.textContent="Add a name first.";return}
+      direct.disabled=true;status.textContent="Sending…";
+      var body=Object.assign({},v,{status:"pending",submittedAt:new Date().toISOString(),submitter:myId||""});
+      dbApi.collection("submissions").doc(slug(v.name)+"-"+Date.now()).set(body).then(function(){status.textContent="Sent. It's in the review inbox now.";direct.disabled=false},function(err){direct.disabled=false;status.textContent=(err&&(err.code==="invalid_argument"||err.code==="not_granted"))?"Your access level can't submit directly. Use Copy instead and reply to the newsletter.":"Couldn't send ("+((err&&err.code)||"error")+"). Try Copy instead."});
+    }}},["Submit for review"]);
+    if(!state.canSubmit)direct.hidden=true;
+    return el("section",{class:"suggest",id:"suggest"},[el("h2",{text:"Suggest a listing"}),
+      el("p",{style:"margin:0;max-width:65ch",text:state.canSubmit?"Run a show, a mic, a troupe, a class or a podcast? Fill this in and submit it for review. Every listing gets checked before it goes up.":"Run a show, a mic, a troupe, a class or a podcast? Performing in Atlanta and want to be listed? Fill this in, copy it, and reply to any issue of the Live Comedy (cheap!) newsletter. Every listing gets checked before it goes up."}),
+      fs.node,el("div",{class:"row",style:"margin-top:12px"},[direct,make]),out,status]);
+  }
+  function inboxSection(){
+    var sec=el("section",{class:"suggest",id:"inbox",style:"margin:16px auto;max-width:1120px"},[el("h2",{text:"Review inbox"})]);
+    if(!state.pending.length){sec.appendChild(el("p",{class:"where",text:"No pending submissions. Invited contributors' suggestions land here."}));return el("div",{class:"wrap"},[sec])}
+    state.pending.forEach(function(p){
+      var d=p.data, who=state.names[d.submitter]||"A contributor";
+      var lines=[el("h3",{style:"margin:12px 0 2px;font-family:var(--display)",text:d.name}),
+        el("div",{class:"where",text:[d.type,d.area,d.where].filter(Boolean).join(" · ")+" — from "+who}),
+        d.note?el("p",{class:"note",text:d.note}):null,
+        d.url?el("div",{class:"where",text:d.url}):null,
+        el("div",{class:"tags"},(d.genres||[]).map(function(g){return el("span",{class:"tag"},[sq(g),gName(g)])})),
+        el("div",{class:"own"},[el("button",{class:"btn primary",type:"button",on:{click:function(ev){
+          ev.target.disabled=true;
+          var item={id:slug(d.name),name:d.name,type:d.type,area:d.area,where:d.where,url:d.url,ig:d.ig||"",note:d.note,genres:d.genres||[]};
+          dbApi.collection("submissions").doc(p.id).update({status:"approved"}).then(function(){data.items.push(item);data.updated=new Date().toISOString().slice(0,10);state.dirty=true;render()},function(){ev.target.disabled=false});
+        }}},["Approve (adds to page)"]),el("button",{class:"btn",type:"button",on:{click:function(ev){ev.target.disabled=true;dbApi.collection("submissions").doc(p.id).delete().catch(function(){ev.target.disabled=false})}}},["Dismiss"])])];
+      lines.forEach(function(n){if(n)sec.appendChild(n)});
+    });
+    sec.appendChild(el("p",{class:"where",text:"Approved listings go on the page. Hit Publish changes to make them public."}));
+    return el("div",{class:"wrap"},[sec]);
+  }
+  function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,48)||("item-"+Date.now())}
+  function openEditor(it){
+    var host=document.getElementById("editor");if(host)host.remove();
+    var fs=fieldset("ed-",it);
+    var sec=el("section",{class:"suggest",id:"editor"},[el("h2",{text:it?"Edit listing":"Add listing"}),fs.node,
+      el("div",{class:"row",style:"margin-top:12px"},[el("button",{class:"btn primary",type:"button",on:{click:function(){
+        var v=fs.read();if(!v.name)return;
+        if(it){Object.assign(it,v)}else{v.id=slug(v.name);data.items.push(v)}
+        data.updated=new Date().toISOString().slice(0,10);state.dirty=true;render();
+      }}},["Save to page"]),el("button",{class:"btn",type:"button",on:{click:function(){sec.remove()}}},["Cancel"])])]);
+    var main=document.querySelector("main .wrap");main.insertBefore(sec,main.firstChild);sec.scrollIntoView({block:"start"});
+  }
+  function removeItem(it){
+    var host=document.getElementById("editor");if(host)host.remove();
+    var sec=el("section",{class:"suggest",id:"editor"},[el("h2",{text:"Remove "+it.name+"?"}),
+      el("div",{class:"row"},[el("button",{class:"btn primary",type:"button",on:{click:function(){data.items=data.items.filter(function(x){return x!==it});data.updated=new Date().toISOString().slice(0,10);state.dirty=true;render()}}},["Remove listing"]),el("button",{class:"btn",type:"button",on:{click:function(){sec.remove()}}},["Keep it"])])]);
+    var main=document.querySelector("main .wrap");main.insertBefore(sec,main.firstChild);sec.scrollIntoView({block:"start"});
+  }
+  var artifactApi=null;
+  function buildDoc(){
+    var css=document.getElementById("dir-css").textContent;
+    var app=document.getElementById("dir-app").textContent;
+    var json=JSON.stringify(data).replace(/</g,"\\u003c");
+    var reset=":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}";
+    return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+reset+'</style></head><body>'+
+      '<title>Atlanta Comedy Directory</title>\n<style id="dir-css">'+css+'</style>\n'+
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">\n'+
+      '<div id="dir-root"></div>\n<script type="application/json" id="dir-data">'+json+'<\/script>\n<script id="dir-app">'+app+'<\/script></body></html>';
+  }
+  function publishNow(){
+    if(!state.dirty||!artifactApi)return;
+    var b=document.getElementById("pubbtn");if(b){b.textContent="Publishing…";b.disabled=true}
+    artifactApi.publish(buildDoc()).catch(function(err){
+      var code=err&&err.code;
+      if(b){b.disabled=false;b.textContent=code==="conflict"?"Someone published first. Reloading…":code==="rate_limited"?"Too many publishes. Try again in a minute.":"Couldn't publish ("+(code||"error")+"). Try again."}
+      if(code==="not_granted"||code==="not_writer"){state.owner=false;render()}
+    });
+  }
+  render();
+  if(window.claude&&window.claude.use){
+    Promise.all([window.claude.use("user"),window.claude.use("artifact"),window.claude.use("db")]).then(function(r){
+      userApi=r[0];artifactApi=r[1];dbApi=r[2];
+      if(!userApi)return;
+      var jobs=[userApi.canEdit(),userApi.can("data.write"),userApi.id?userApi.id().catch(function(){return null}):Promise.resolve(null)];
+      return Promise.all(jobs).then(function(x){
+        var owner=!!x[0]&&!!artifactApi; myId=x[2];
+        state.canSubmit=!!dbApi&&x[1]!==false;
+        state.owner=owner;
+        if(owner&&dbApi){
+          dbApi.collection("submissions").where("status","==","pending").onSnapshot(function(snap){
+            state.pending=snap.docs.map(function(d){return {id:d.id,data:d.data()||{}}});
+            var ids=state.pending.map(function(p){return p.data.submitter}).filter(Boolean);
+            if(ids.length&&userApi.profiles){userApi.profiles(ids).then(function(ps){ids.forEach(function(id){if(ps&&ps[id]&&ps[id].name)state.names[id]=ps[id].name});render()}).catch(function(){render()})}else render();
+          },function(){});
+        }
+        render();
+      });
+    }).catch(function(){});
+  }
+})();
+</script>
+
+</body></html>
