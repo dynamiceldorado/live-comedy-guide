@@ -6,16 +6,16 @@
 <style>
 /* Layout: one 680px newsletter column — dark-green theater-bill masthead, then cream "program" pages with ticket-stub listings */
 :root{
-  --bg:#efeadf;          /* page behind the paper */
-  --paper:#fbf8f2;       /* newsletter sheet */
-  --ink:#1d2620;         /* body text, green-black */
-  --muted:#5c6a60;
-  --rule:#d9d1c2;
-  --green:#163a2a;       /* brand dark green */
-  --green-2:#1f4d38;
-  --gold:#c9a387;        /* logo tan — accents only */
-  --gold-ink:#8a6544;    /* readable gold for small text on paper */
-  --on-green:#f6f0e4;
+  --bg:#e9e1cd;          /* page behind the paper */
+  --paper:#f3ecdc;       /* newsletter sheet */
+  --ink:#0c2118;         /* body text, green-black */
+  --muted:#586457;
+  --rule:#d8cdb4;
+  --green:#123d2c;       /* brand dark green */
+  --green-2:#1a4d38;
+  --gold:#b79c55;        /* poster gold — accents only */
+  --gold-ink:#775e25;    /* readable gold for small text on paper */
+  --on-green:#f3ecdc;
   --note-bg:#fff4dc; --note-bd:#d9a441; --note-ink:#6b4a10;
   --g-clown:#b5432f; --g-stand:#3d68a6; --g-impro:#4d8a4a; --g-sketch:#a67a14; --g-var:#7b4397;
   --f-display:"DM Serif Display",Georgia,"Times New Roman",serif;
@@ -23,11 +23,11 @@
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0e1712; --paper:#152019; --ink:#e9e4d8; --muted:#a0aaa2; --rule:#2c3a31; --green:#163d2c; --green-2:#14392a; --gold:#d4b196; --gold-ink:#d4b196;
-  --on-green:#f6f0e4; --note-bg:#2a2210; --note-bd:#b88a2e; --note-ink:#f0d79c; --g-clown:#d9654f; --g-stand:#7097d0; --g-impro:#79b06f; --g-sketch:#d8aa46; --g-var:#b58ad6; color-scheme:dark}}
+  --bg:#0c1712; --paper:#13241b; --ink:#efe8d6; --muted:#a3ad9f; --rule:#2b3b30; --green:#123d2c; --green-2:#1a4d38; --gold:#c9ae68; --gold-ink:#c9ae68;
+  --on-green:#f3ecdc; --note-bg:#2a2210; --note-bd:#b88a2e; --note-ink:#f0d79c; --g-clown:#d9654f; --g-stand:#7097d0; --g-impro:#79b06f; --g-sketch:#d8aa46; --g-var:#b58ad6; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0e1712; --paper:#152019; --ink:#e9e4d8; --muted:#a0aaa2; --rule:#2c3a31; --green:#163d2c; --green-2:#14392a;
-  --gold:#d4b196; --gold-ink:#d4b196; --on-green:#f6f0e4; --note-bg:#2a2210; --note-bd:#b88a2e; --note-ink:#f0d79c; --g-clown:#d9654f; --g-stand:#7097d0; --g-impro:#79b06f; --g-sketch:#d8aa46; --g-var:#b58ad6; color-scheme:dark}
+  --bg:#0c1712; --paper:#13241b; --ink:#efe8d6; --muted:#a3ad9f; --rule:#2b3b30; --green:#123d2c; --green-2:#1a4d38;
+  --gold:#c9ae68; --gold-ink:#c9ae68; --on-green:#f3ecdc; --note-bg:#2a2210; --note-bd:#b88a2e; --note-ink:#f0d79c; --g-clown:#d9654f; --g-stand:#7097d0; --g-impro:#79b06f; --g-sketch:#d8aa46; --g-var:#b58ad6; color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);padding-inline:16px;padding-block:24px 48px}
