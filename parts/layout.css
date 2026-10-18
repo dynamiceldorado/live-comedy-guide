@@ -29,23 +29,22 @@
 .chip.unc{border-style:dashed}
 .ev .where{font:400 14px/1.5 var(--f-body);color:var(--muted);margin:0 0 4px}
 .ev .desc{font-size:14.5px;line-height:1.5;margin:4px 0 0}
-.ev .go{margin:auto 0 0;padding-top:12px}
-.ev .go a{display:inline-block;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;text-decoration:none;font-weight:600;font-size:13.5px}
-.ev .go a:hover{border-color:var(--gold)}
+.ev h4 a{color:inherit;text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+.ev h4 a:hover{color:var(--gold-ink)}
+.ev .where a{color:inherit;font-weight:500;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--gold) 70%,transparent);text-underline-offset:3px}
+.foot .updated{text-align:right;font:400 13px/1.4 var(--f-body);opacity:.7;margin:14px 0 0}
 .ev.ded{box-shadow:inset 4px 0 0 var(--bar-ded)}
 .ev.unc{border-style:dashed}
 
 /* This Week: one column, date on the left */
-.c1 .ev:not(.feat) .evb{display:grid;grid-template-columns:170px minmax(0,1fr) auto;column-gap:18px;align-items:start}
+.c1 .ev:not(.feat) .evb{display:grid;grid-template-columns:170px minmax(0,1fr);column-gap:18px;align-items:start}
 .c1 .ev:not(.feat) .evb>*{grid-column:2}
 .c1 .ev:not(.feat) .evb>.when{grid-column:1;grid-row:1 / span 6;margin:2px 0 0}
-.c1 .ev:not(.feat) .evb>.go{grid-column:3;grid-row:1 / span 6;align-self:start;margin:0;padding:0}
 .c1 .ev:not(.feat) .when .t{display:block}
 .c1 .ev:not(.feat) .when .t::before{content:none}
 @media (max-width:620px){
   .c1 .ev:not(.feat) .evb{display:flex}
   .c1 .ev:not(.feat) .evb>.when{margin:0 0 6px}
-  .c1 .ev:not(.feat) .evb>.go{margin:auto 0 0;padding-top:12px}
   .c1 .ev:not(.feat) .when .t{display:inline}
   .c1 .ev:not(.feat) .when .t::before{content:" · "}
 }

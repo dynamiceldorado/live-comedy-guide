@@ -19,7 +19,6 @@ import argparse, base64, datetime as dt, html, json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parent
 GUIDE = "https://guide.dynamiceldorado.com/"
 FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdmeltLBWwirmeO_R6KCv9PdUNMEizfonqVJX2pDmcGjky0cQ/viewform"
-NEWS = "https://squareup.com/customer-programs/enroll/tdb8t92f3zVq"
 GENRE = {"clown": "clown", "stand-up": "stand", "improv": "impro", "sketch": "sketch", "variety": "var"}
 GENRE_LABEL = {"clown": "Clown", "stand": "Stand-up", "impro": "Improv", "sketch": "Sketch", "var": "Variety"}
 TYPE_CHIP = {"class": "Class", "workshop": "Workshop", "festival": "Festival", "deadline": "Deadline",
@@ -125,6 +124,9 @@ def is_featured(e, inline):
     return src, note
 
 
+VENUES = json.loads((ROOT / "data" / "venues.json").read_text(encoding="utf8"))
+
+
 def cell(e, today, inline, compact):
     g = GENRE.get(e.get("genre") or "", "")
     feat = is_featured(e, inline)
@@ -153,22 +155,26 @@ def cell(e, today, inline, compact):
         chips.append(f'<span class="chip">{TYPE_CHIP[e["type"]]}</span>')
     if (e.get("cheap_date") or "").upper() == "Y":
         chips.append('<span class="chip cheap">Cheap date</span>')
-    out.append(f'<h4>{sq}{esc(e["title"])}</h4>')
+    title = esc(e["title"])
+    if e.get("link"):
+        title = f'<a href="{esc(e["link"], quote=True)}">{title}</a>'
+    out.append(f'<h4>{sq}{title}</h4>')
     if chips:
         out.append('<p class="chips">' + " ".join(chips) + "</p>")
-    where = ", ".join(x for x in [e.get("venue"), e.get("area")] if x)
-    bits = [x for x in [where, e.get("price_text")] if x]
+    venue = e.get("venue") or ""
+    venue_html = esc(venue)
+    if venue and VENUES.get(venue):
+        venue_html = f'<a href="{esc(VENUES[venue], quote=True)}">{venue_html}</a>'
+    place = ", ".join(x for x in [venue_html, esc(e.get("area") or "")] if x)
+    bits = [x for x in [place, esc(e.get("price_text") or "")] if x]
     if bits:
-        out.append(f'<p class="where">{esc(" · ".join(bits))}</p>')
+        out.append(f'<p class="where">{" · ".join(bits)}</p>')
     desc = (e.get("description") or "").strip()
     show_desc = desc and (not compact or e.get("type") not in ("show", "headliner"))
     if show_desc:
         out.append(f'<p class="desc">{esc(desc)}</p>')
     if feat:
         out.append(f'<p class="why"><b>Why we picked it</b>{esc(feat[1])}</p>')
-    if e.get("link"):
-        label = e.get("link_label") or LINK_LABEL.get(e.get("type") or "show", "Info")
-        out.append(f'<p class="go"><a href="{esc(e["link"], quote=True)}">{esc(label)}</a></p>')
     out.append("</div></article>")
     return "".join(out)
 
@@ -233,8 +239,6 @@ def build(performers, today, inline, sample):
             continue
         chips.append(f'<a href="#{sid}">{chip}</a>')
         body.append(section(sid, eyebrow, title, lead, cols, items, today, inline))
-        if sid == "thisweek":
-            body.append(SUB_STRIP)
     chips.append('<a href="#about">About &amp; Submit</a>')
 
     head = HEAD
@@ -268,19 +272,16 @@ def build(performers, today, inline, sample):
             + MAST.format(issue=issue)
             + '  <div class="content">\n    <nav class="toc" aria-label="Sections">' + "".join(chips) + "</nav>\n"
             + intro + LEGEND + "\n".join(body) + ABOUT + "  </div>\n"
-            + FOOTER.format(logo=logo) + "</article>\n\n</body></html>\n")
+            + FOOTER.format(logo=logo, updated=f"{MONS[today.month - 1]} {today.day}, {today.year}") + "</article>\n\n</body></html>\n")
     return page, (len(this_w), len(next_w), len(far), len(unconf))
 
 
 HEAD = (ROOT / "parts" / "head.html").read_text(encoding="utf8")
 
-TOOLBAR = """<div class="toolbar">
-  <span>Updated when we roll snake eyes</span>
-</div>
-"""
+TOOLBAR = ""
 
-TOPNAV = """  <nav class="topnav" aria-label="Dynamic El Dorado sites"><a class="home" href="https://dynamiceldorado.com/" aria-label="Dynamic El Dorado"><img src="{logo}" alt="Dynamic El Dorado"></a><div class="navright"><div class="navlinks">{mode_link}<a class="first" href="https://directory.dynamiceldorado.com/">Directory</a><a href="%s">Newsletter</a><a href="%s" target="_blank" rel="noopener">Submit your info</a></div><p class="edition">November 2026 Edition</p></div></nav>
-""" % (NEWS, FORM)
+TOPNAV = """  <nav class="topnav" aria-label="Dynamic El Dorado sites"><a class="home" href="https://dynamiceldorado.com/" aria-label="Dynamic El Dorado"><img src="{logo}" alt="Dynamic El Dorado"></a><div class="navright"><div class="navlinks">{mode_link}<a class="first" href="https://directory.dynamiceldorado.com/">Directory</a><a href="%s" target="_blank" rel="noopener">Submit your info</a></div></div></nav>
+""" % FORM
 
 MAST = """  <header class="mast">
     <h1>Live Comedy <em>(cheap!)</em></h1>
@@ -297,20 +298,13 @@ LEGEND = """    <div class="legend" aria-label="Key">
 
 """
 
-SUB_STRIP = """<aside class="sub-strip" aria-label="Newsletter">
-      <p><b>Get the email.</b> Live Comedy (cheap!) brings hand-picked live comedy straight to your inbox.</p>
-      <div class="fcta"><a class="btn gold" href="%s">Subscribe</a></div>
-    </aside>
-""" % NEWS
-
 ABOUT = """
     <section id="about">
       <p class="eyebrow">About this guide</p>
       <h2>About</h2>
       <div class="about">
-        <div><h4>What we list</h4><p>Comedy in metro Atlanta, inside and outside the Perimeter, in date and time order. When two listings start together, independent producers and troupes go first. Shows at major venues and touring headliners are included for completeness.</p></div>
-        <div><h4>How it's updated</h4><p>Details come from venue and ticketing pages. Prices and times can change, so confirm with the venue before you go.</p></div>
-        <div><h4>Get the email</h4><p>The <em>Live Comedy (cheap!)</em> email brings hand-picked live comedy straight to your inbox. <a href="%s">Subscribe</a></p></div>
+        <div><h4>What we're about</h4><p>We're all about supporting the independent shows and venues. Atlanta doesn't get enough recognition nor support for the fantastic comedic talent that it has. We're here to change that.</p></div>
+        <div><h4>Where listings come from</h4><p>Listings here come from web searches, gossipy neighbors, word of mouth, the rumor mill, crystal balls, and many other sources.</p></div>
         <div><h4>More resources</h4><p><a href="https://directory.dynamiceldorado.com/">Atlanta Comedy Directory</a> of venues, troupes, open mics, classes and festivals.</p></div>
       </div>
       <div id="submit" style="margin-top:28px">
@@ -319,22 +313,22 @@ ABOUT = """
       <a class="cta" href="%s" target="_blank" rel="noopener" style="display:inline-block;background:var(--green);color:var(--on-green);text-decoration:none;font-weight:700;padding:12px 20px;border-radius:6px">Submit Your Thing →</a>
       <p class="quiet" style="margin-top:12px">Takes about three minutes.</p></div>
     </section>
-""" % (NEWS, FORM)
+""" % FORM
 
 FOOTER = """  <footer class="foot">
     <a class="foot-logo" href="https://dynamiceldorado.com/" aria-label="Dynamic El Dorado"><img src="{logo}" alt="Dynamic El Dorado"></a>
-    <p>Dynamic El Dorado's Guide to Live Comedy in Atlanta is published by Dynamic El Dorado, an Atlanta comedy incubator.</p>
+    <p>Dynamic El Dorado, Atlanta's Comedy Incubator</p>
     <div class="row">
       <a href="https://directory.dynamiceldorado.com/">Atlanta Comedy Directory</a>
       <a href="https://www.crowdwork.com/v/dynamiceldorado/shows">Shows</a>
       <a href="https://www.crowdwork.com/v/dynamiceldorado/classes">Classes</a>
-      <a href="%s">Newsletter</a>
       <a href="https://www.instagram.com/dynamiceldorado/">Instagram</a>
       <a href="https://www.facebook.com/DynamicElDorado">Facebook</a>
     </div>
     <p class="legal">We build this Guide from venue and ticketing pages and community submissions, and we do our best to keep it current. We still get things wrong and leave things out. Dates, times, prices, lineups and ticket links change without notice, so confirm with the venue or ticket seller before you go. The Guide is provided as is. Dynamic El Dorado is not responsible for errors, omissions, cancellations or changes, or for the content, policies or conduct of third-party venues, producers or sites we link to. A listing is not an endorsement, and a missing one is not a snub. Spot a mistake? <a href="%s">Tell us here</a>.</p>
+    <p class="updated">Last updated {updated}</p>
   </footer>
-""" % (NEWS, FORM)
+""" % FORM
 
 LAYOUT_CSS = (ROOT / "parts" / "layout.css").read_text(encoding="utf8")
 
