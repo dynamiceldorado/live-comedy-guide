@@ -317,7 +317,7 @@ ABOUT = """
 
 FOOTER = """  <footer class="foot">
     <a class="foot-logo" href="https://dynamiceldorado.com/" aria-label="Dynamic El Dorado"><img src="{logo}" alt="Dynamic El Dorado"></a>
-    <p>Dynamic El Dorado, Atlanta's Comedy Incubator</p>
+    <p>Published by: Dynamic El Dorado, Atlanta's Comedy Incubator</p>
     <div class="row">
       <a href="https://directory.dynamiceldorado.com/">Atlanta Comedy Directory</a>
       <a href="https://www.crowdwork.com/v/dynamiceldorado/shows">Shows</a>
