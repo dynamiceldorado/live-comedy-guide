@@ -285,7 +285,7 @@ TOPNAV = """  <nav class="topnav" aria-label="Dynamic El Dorado sites"><a class=
 
 MAST = """  <header class="mast">
     <h1>Live Comedy <em>(cheap!)</em></h1>
-    <p class="sub">A guide to Atlanta comedy for smart, sexy people who don’t like to think. We picked out the best shows, classes, and festivals so your beautiful, empty head doesn't have to. Brought to you by Dynamic El Dorado and some random people who gave us random drugs. If you're ugly, please stop reading this. If you're dumb, we would love some comp tickets to your show.</p>
+    <p class="sub">A guide to upcoming comedy in Atlanta, including shows, classes, open mics, and festivals. Curated by Dynamic El Dorado.</p>
     <div class="issue"><span>{issue}</span></div>
   </header>
 """
