@@ -9,7 +9,7 @@ Each site takes only its own section_keys; other rows are skipped.
 On a bad read or bad rows, the existing sections file is kept and the script
 exits non-zero so the scheduled run fails visibly.
 """
-import csv, io, json, os, pathlib, sys, urllib.request
+import csv, io, json, os, pathlib, re, sys, urllib.request
 
 ROOT = pathlib.Path.cwd()  # the repo the script is run from
 SITES = {
@@ -33,7 +33,7 @@ def parse(text, site):
     rows = list(csv.DictReader(io.StringIO(text)))
     sections, seen = [], set()
     for n, row in enumerate(rows, 2):  # row 1 is the header
-        key = (row.get("section_key") or "").strip()
+        key = re.sub(r"\s+", "", (row.get("section_key") or "").lower())  # "this week" -> "thisweek"
         if not key:
             continue  # blank rows below the table are fine
         if key not in ALL_KEYS:
