@@ -1,0 +1,47 @@
+name: Publish Guide
+
+# The robot publisher. The Comedy Database sheet pushes data/sheet/events.csv and
+# data/sheet/sections.csv here (Apps Script inside the sheet). This workflow turns them into
+# the two Guide pages. It also rebuilds every morning so "This Week" and past items stay current.
+on:
+  push:
+    paths: ["data/sheet/**"]
+  schedule:
+    - cron: "17 10 * * *"   # daily, 5:17 AM EST / 6:17 AM EDT
+  workflow_dispatch:        # "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sheet rows to events.json
+        run: |
+          if [ -f data/sheet/events.csv ]; then python3 sheet_to_events.py data/sheet/events.csv; fi
+
+      - name: Sheet section titles
+        run: |
+          if [ -f data/sheet/sections.csv ]; then python3 sync_sections.py guide data/sheet/sections.csv; fi
+
+      - name: Build both pages
+        run: python3 build.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "Dynamic El Dorado robot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/events.json sections.json index.html performers/index.html
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Robot publish $(TZ=America/New_York date +%F)"
+            git push
+          fi

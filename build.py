@@ -197,7 +197,7 @@ def load_events(performers, today):
         if not performers and e.get("view") not in ("Public", "Both"):
             continue
         last = d(e.get("end_date")) or d(e["start_date"])
-        if e.get("status") == "verified" and last < today:
+        if last < today:  # past items drop whatever their status
             continue
         keep.append(e)
     return keep
