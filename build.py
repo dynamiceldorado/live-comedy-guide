@@ -224,14 +224,14 @@ def build(performers, today, inline, sample):
         return f"{fmt(a)} – {fmt(b)}"
 
     secs = [
-        ("thisweek", "This Week", span(wk_start, wk_end), "This Week", None, 1, this_w),
-        ("nextweek", "Next Week", span(wk_end + dt.timedelta(days=1), nx_end), "Next Week", None, 2, next_w),
-        ("furtherout", "Further Out", "", "Further Out", None, 3, far),
-        ("unconfirmed", "Unconfirmed", "Dates or details still pending", "Unconfirmed",
+        ("thisweek", sec_title("thisweek", "This Week"), span(wk_start, wk_end), sec_title("thisweek", "This Week"), None, 1, this_w),
+        ("nextweek", sec_title("nextweek", "Next Week"), span(wk_end + dt.timedelta(days=1), nx_end), sec_title("nextweek", "Next Week"), None, 2, next_w),
+        ("furtherout", sec_title("furtherout", "Further Out"), "", sec_title("furtherout", "Further Out"), None, 3, far),
+        ("unconfirmed", sec_title("unconfirmed", "Unconfirmed"), "Dates or details still pending", sec_title("unconfirmed", "Unconfirmed"),
          "These may happen, but we do not have full details yet. Check with the producer before you plan around them.", 3, unconf),
     ]
     after = nx_end + dt.timedelta(days=1)
-    secs[2] = ("furtherout", "Further Out", f"From {fmt(after)}", "Further Out", None, 3, far)
+    secs[2] = ("furtherout", sec_title("furtherout", "Further Out"), f"From {fmt(after)}", sec_title("furtherout", "Further Out"), None, 3, far)
 
     body, chips = [], []
     for sid, chip, eyebrow, title, lead, cols, items in secs:
@@ -334,6 +334,22 @@ LAYOUT_CSS = (ROOT / "parts" / "layout.css").read_text(encoding="utf8")
 
 # Sample featured cells for the preview only (placeholder squares, invented text). Never published.
 SAMPLE = {}
+
+
+# Window titles come from sections.json (synced from the Comedy Database sheet).
+# Order is not editable here: the windows always run in calendar order.
+def load_section_titles():
+    path = pathlib.Path(__file__).parent / "sections.json"
+    if not path.exists():
+        return {}
+    return {r["key"]: r["title"] for r in json.loads(path.read_text(encoding="utf-8")) if r.get("active", True)}
+
+
+SECTION_TITLES = load_section_titles()
+
+
+def sec_title(key, default):
+    return SECTION_TITLES.get(key, default)
 
 
 def main():

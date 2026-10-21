@@ -1,0 +1,26 @@
+[
+  {
+    "key": "thisweek",
+    "order": 9,
+    "title": "This Week",
+    "active": true
+  },
+  {
+    "key": "nextweek",
+    "order": 10,
+    "title": "Next Week",
+    "active": true
+  },
+  {
+    "key": "furtherout",
+    "order": 11,
+    "title": "Further Out",
+    "active": true
+  },
+  {
+    "key": "unconfirmed",
+    "order": 12,
+    "title": "Unconfirmed",
+    "active": true
+  }
+]
