@@ -13,6 +13,10 @@
  * is new), logs what it did on the "Robot log" tab, and moves each file to "inbox processed".
  * Miguel's cells win: rejected rows are never touched, and ded_pick, pick_note, image_url and
  * internal_note are never overwritten on an existing row.
+ * "listings" (Directory) are filed ONLY from files whose name contains "chat" (a chat session
+ * where Miguel said yes); scheduled tasks can't add Directory listings.
+ * "research" updates the Research tab: Miguel jots a name and a hint there, the Sunday run
+ * researches it and marks the row Done or Not found.
  *
  * Only public columns of the Events tab leave the sheet (internal_note, source, first_seen,
  * last_verified, out_of_town and price_max_usd stay private). Nothing is pushed when nothing changed.
@@ -96,6 +100,7 @@ function publishNowWithMessage() {
 
 function publishNow() {
   var ss = SpreadsheetApp.getActive();
+  ensureResearchTab(ss);
   var filed = processInbox(ss);
   var events = tabCsv(ss, 'Events', EVENT_COLUMNS);
   var sections = tabCsv(ss, 'Sections & Tags', SECTION_COLUMNS);
@@ -124,7 +129,14 @@ function processInbox(ss) {
       var e = upsertEvents(ss, data.events || []);
       var q = appendNew(ss, 'Directory Queue', data.directory_queue || []);
       var r = appendNew(ss, 'Resources', data.resources || []);
-      msg = f.getName() + ': events ' + e.added + ' added, ' + e.updated + ' updated, ' + e.skipped + ' skipped (yours); queue +' + q + '; resources +' + r;
+      var l = { added: 0, updated: 0 }, lnote = '';
+      if ((data.listings || []).length) {
+        if (/chat/i.test(f.getName())) l = upsertListings(ss, data.listings);
+        else lnote = ' (listings ignored: only chat files may add them)';
+      }
+      var x = updateResearch(ss, data.research || []);
+      msg = f.getName() + ': events ' + e.added + ' added, ' + e.updated + ' updated, ' + e.skipped + ' skipped (yours); queue +' + q + '; resources +' + r +
+        '; listings ' + l.added + ' added, ' + l.updated + ' updated' + lnote + '; research ' + x + ' marked';
       f.moveTo(done);
     } catch (err) {
       msg = f.getName() + ': NOT FILED, ' + err.message;
@@ -169,6 +181,60 @@ function upsertEvents(ss, rows) {
     res.updated++;
   });
   return res;
+}
+
+function upsertListings(ss, rows) {
+  var sh = ss.getSheetByName('Listings');
+  var vals = sh.getDataRange().getValues();
+  var head = vals[0].map(function (h) { return String(h).trim(); });
+  var byId = {};
+  for (var i = 1; i < vals.length; i++) if (vals[i][0]) byId[String(vals[i][0]).trim()] = i;
+  var res = { added: 0, updated: 0 };
+  rows.forEach(function (r) {
+    if (!r.id) return;
+    var i = byId[r.id];
+    if (i === undefined) {
+      sh.appendRow(head.map(function (h) { return r[h] !== undefined ? asText(r[h]) : (h === 'active' ? 'Y' : ''); }));
+      byId[r.id] = sh.getLastRow() - 1;
+      res.added++;
+      return;
+    }
+    Object.keys(r).forEach(function (k) {
+      var c = head.indexOf(k);
+      if (c > 0) sh.getRange(i + 1, c + 1).setValue(asText(r[k]));
+    });
+    res.updated++;
+  });
+  return res;
+}
+
+var RESEARCH_HEAD = ['what', 'hint', 'status', 'claude_note'];
+
+function ensureResearchTab(ss) {
+  if (ss.getSheetByName('Research')) return;
+  var sh = ss.insertSheet('Research');
+  sh.appendRow(RESEARCH_HEAD);
+  sh.appendRow(['(example) Clown night at Vesper', 'saw a flyer, maybe Nov 14', 'Done', 'Example row. Type real ones below; leave status blank.']);
+  sh.setFrozenRows(1);
+}
+
+// Each item: {what, status, claude_note}. Matches the Research row whose "what" is identical.
+function updateResearch(ss, items) {
+  if (!items.length) return 0;
+  var sh = ss.getSheetByName('Research');
+  var vals = sh.getDataRange().getValues();
+  var n = 0;
+  items.forEach(function (it) {
+    for (var i = 1; i < vals.length; i++) {
+      if (String(vals[i][0]).trim() === String(it.what || '').trim()) {
+        if (it.status) sh.getRange(i + 1, 3).setValue(it.status);
+        if (it.claude_note) sh.getRange(i + 1, 4).setValue(it.claude_note);
+        n++;
+        break;
+      }
+    }
+  });
+  return n;
 }
 
 function appendNew(ss, tab, rows) {
