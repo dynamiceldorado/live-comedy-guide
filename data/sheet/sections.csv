@@ -3,10 +3,10 @@ thisweek,1,This Week,Y,Edit title freely
 nextweek,2,Next Week,Y,Lowest display_order appears first
 furtherout,3,Further Out,Y,Edit title freely: e.g. Practice
 classes,4,Education,Y,Set active to N to hide a section
-openmic,5,Practice Sessions,Y,
+openmic,5,Practice,Y,
 festival,6,Festivals,Y,
 podcast,7,Podcasts,Y,
-resource,8,Calendars & resources,Y,
+resource,8,Other Resources,Y,
 performer,9,Performers,Y,
 venue,11,Venues,Y,
 unconfirmed,10,Unconfirmed,Y,
