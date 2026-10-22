@@ -1,13 +1,10 @@
 section_key,display_order,title,active,notes
 show,1,Shows,Y,Edit title freely
-thisweek,2,This Week,Y,Lowest display_order appears first
-nextweek,3,Next Week,Y,Edit title freely: e.g. Practice
-furtherout,4,Further Out,Y,Set active to N to hide a section
-classes,5,Education,Y,
-openmic,6,Practice,Y,
-festival,7,Festivals,Y,
-podcast,8,Podcasts,Y,
-resource,9,Other Resources,Y,
-performer,10,Performers,Y,
-unconfirmed,12,Unconfirmed,Y,
-venue,11,Venues,Y,Directory: shows by next show date
+classes,2,Education,Y,Lowest display_order appears first
+openmic,3,Practice,Y,Edit title freely: e.g. Practice
+festival,4,Festivals,Y,Set active to N to hide a section
+podcast,5,Podcasts,Y,
+resource,6,Resources,Y,Directory: shows by next show date
+performer,7,Performers,N,
+unconfirmed,8,Unconfirmed,Y,
+venue,9,Venues,Y,
