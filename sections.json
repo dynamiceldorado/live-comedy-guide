@@ -1,25 +1,7 @@
 [
   {
-    "key": "thisweek",
-    "order": 2,
-    "title": "This Week",
-    "active": true
-  },
-  {
-    "key": "nextweek",
-    "order": 3,
-    "title": "Next Week",
-    "active": true
-  },
-  {
-    "key": "furtherout",
-    "order": 4,
-    "title": "Further Out",
-    "active": true
-  },
-  {
     "key": "unconfirmed",
-    "order": 12,
+    "order": 8,
     "title": "Unconfirmed",
     "active": true
   }
